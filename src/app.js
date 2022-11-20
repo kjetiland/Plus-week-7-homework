@@ -21,7 +21,8 @@ function formatDate(timestamp) {
   return `${day} ${hours}:${minutes}`;
 }
 
-function displayForecast() {
+function displayForecast(response) {
+  console.log(response.data.daily);
   let forecastElement = document.querySelector("#forecast");
   let days = ["Thu", "Fri", "Sat", "Sun"];
   let forecastHTML = `<div class="row">`;
@@ -50,6 +51,13 @@ function displayForecast() {
   forecastElement.innerHTML = forecastHTML;
 }
 
+function getForecast(coordinates) {
+  console.log(coordinates);
+
+  let apiUrl = `https://api.shecodes.io/weather/v1/current?lat=${coordinates.latitude}&lon=${coordinates.longitude}&key=01a64498f22b2eofd20ad4ct64f7e0a3&units=metric`;
+  axios.get(apiUrl).then(displayForecast);
+}
+
 function displayTemperature(response) {
   let temperatureElement = document.querySelector("#temperature");
   let cityElement = document.querySelector("#city");
@@ -72,6 +80,7 @@ function displayTemperature(response) {
     `http://shecodes-assets.s3.amazonaws.com/api/weather/icons/${response.data.condition.icon}.png`
   );
   iconElement.setAttribute("alt", response.data.condition.icon);
+  getForecast(response.data.coordinates);
 }
 function search(city) {
   let apiUrl = `https://api.shecodes.io/weather/v1/current?query=${city}&key=01a64498f22b2eofd20ad4ct64f7e0a3&units=metric`;
@@ -111,4 +120,3 @@ let celsiusLink = document.querySelector("#celsius-link");
 celsiusLink.addEventListener("click", displayCelsiusTemperature);
 
 search("New York");
-displayForecast();
